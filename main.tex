@@ -1,9 +1,9 @@
-\documentclass{article}
+\documentclass{article} 
 \usepackage{blindtext}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
  
-\title{Literature Survery (Mid-year)}
+\title{Literature Survey (Mid-year)}
 \author{Victor van Wymeersch}
 \date{\today}
 \begin{document}
@@ -11,10 +11,108 @@
 
  
 \section{Background and Objective Formulation}
+Goal of thesis: To program an advanced collaborative handover task between a robot and a human. 
+What is advanced, collaborative, and what is a handover specifically. 
 
 \section{Methodology}
- 
+% how do we plan to do everything
 \section{Literature}
+\subsection{Alternate methods used in literature}
+\subsubsection{Alternate trajectory descriptors}
+% Other types of trajectory descriptors and their pitfalls and advantages 
+
+Other types of trajectory adaptive methods used in learning by demonstration: 
+-Spline based approaches: Uses mathematical functions to represent trajectories called splines. Changes the weightings of the mathematical descrioptions to create trajectories under new conditions. Simple to implement , suffer from undulations around the spline knots 
+-Probabilistic approaches (hidden markov models and gaussian mixture modeling and probabalistic movement primitives): Motions are generalised by modelling the variablility of repeatedly executed demonstrations. Trajectories are defined as a weighted sum of a set of basis functions. Extrapolating motions to ones outside range of demonstrated motions leads to poor results. Multiple demonstrations are neeeded. 
+-Dynamical-system representations: Uses perturbations on the demonstrated trajectory to generalise motions to new condiitons. Trajectories tend to lose similarity from demonstrated motion away from demonstrated paths. 
+-Global transformation approaches: Transformations are not always found.
+-Optimal control-based approaches: Solves optinal control problems and adapts weighting on the cost functions to generalise motions to new situations. 
+All of these methods tend to lose similarity with the demonstrated motions when creating motions to new situations.
+
+\subsection{Invariant representation of rigid body motion trajectories for learning by demonstration}
+\subsubsection{Motion Models}
+Understanding human intention: 
+Integral part of a collaborative human robot task is the estimation of human intention and predicting what humans will do next. 
+
+Adapting motions:
+to fit into the context of human collaboration it is important to be able to adapt motions according to variables in the workspace during run time of tasks. 
+Human motions are not pre programmed and can vary for every task.
+Robots need to be able to account for these variations if efficient collaboration is required. 
+
+Modelling human and robot motions mathematically: 
+Humans and robots are modelled as rigid body motions whose trajectories are purely kinematic. 
+Rigid means objects dont deform under loads.
+6DOF motions are required to fully describe trajectories in 3D space.
+
+\subsubsection{Learning from Humans}
+Programming robots in environments that are dynamic and involve collaboration with humans is complex and traditional programming styles are unable to cope with these demands. 
+Programming robots through human demonstration can make motions more human-like and realistic. 
+Can make the programming of task very simple and quick. 
+Adapting demonstrated motions to new circumstances can be difficult means that a large amount of demonstrated motions are needed in many different situations to cover all motion possibilities. 
+This is time consuming and may need advanced knowledge to do so. 
+
+\subsubsection{Contextual Dependencies of Demonstrated Motions}
+1) choice of world reference frame where the camera system is placed busy taking the recordings
+2) choice of rigid body references , where the tracker is placed 
+3) offset locations of where the motions are taking place in space 
+4) execution styles
+    - speed of executions, variations in path velocities, inter destination positions in space
+5) changes in starting orientation and position
+6) changes in amplitude or size of the space the motion happens in 
+Invariant descriptions of trajectories allow for us to generalise motions based on the task and exclude the dependencies to the above mentioned variances on demonstrated motions. 
+A single demonstration can then be used to account for all these variations in the robots task.
+Invariants can also be used to predict human motions and recognise motions when variations in the execution of the human is present. 
+
+\subsubsection{Invariants}
+Invariant trajectories are trajectories that stay the same under a set of mathematical transformations in 3D space.
+That is for rotations, translations and scaling.
+We use local differential-geometric invariant representations of rigid body trajectory representations derived in 3D euclidean space. 
+Properties are: 
+- local, means that if part of the trajectory is excluded the trajectory can still be reconstructed in 3d space. 
+- complete, means that from the invariant representation the original trajectory can be recreated or used to create new trajectories under new circumstances. they are also minimal trajectory descriptions. 
+- physical meaning, some invariants when zero constant or varying specifically have semantic meaning and can be used to characterise trajectories directly... screwing motions etc.
+
+If invariants are measured by a 3D motion stereo camera system such as the HTC vive then the descriptors only need to remain invariant to Euclidean transformations. 
+
+Choice of invariants: 
+%need to explain how each of these works if we use them in our thesis
+Instantaneous screw axis 
+Frennet-Serret invariants 
+Frennet-Serret invariants describe the changes in the motion of a point located somewhere on a rigid body according to the moving Frennet-Serret frame. 
+Invariant to ? 
+
+Time-based trajectory descriptors: 
+Deal with variations in the starting position and orientation of the object, the reference frame in which the motion is observed, and the reference point chosen to express the trajectory in space. 
+-Invariance with respect to the staring position and orientation is realised using the definition of Twist, the rate of change of the pose of a object. 
+-Invariance with respect to the reference frame or viewpoint is achieved through using a coordinate free trajectory description such as the Frennet-Serret invariants (extended FS just includes the rotational components)...Formulas...
+-Invariance with respect to the changes in reference points is achieved using the concept of the screw axis defined by Chasles's theorem (insert citation). The instantaneous screw axis is then used. (add info) 
+
+Geometric and dimensionless geormetric trajectory descriptions:
+Used to create invariance with respect to the execution style of the motion, meaning invariance with respect to the time scale, velocity profile and the linear/angular scale.
+-Invariance to changes in time scale and velocity profile is achieved through descibing the invariants as a function of degree of advancement such as the arc length, instead of time. 
+This means descibing the motion as a function between 0 and 1 depending on how far along the trajectory the object has moved. These are simple geometric descriptors. 
+-Invariance to the changes in linear/angular scales are achieved through choosing scaling factors to the rates of advancement. 
+This involves dividing the rates of advancement [in metres or radians] by the total length or angles along the path to create dimensionless invariants. 
+
+Why invariant?
+Humans have no problem recognising or executing various motions under differnet transformations. Therefore maintaining these invariants when generating trajectories is useful in human robot interactions and collaborative applications since then the robot motions will still look natural and interperatable by human collaborators. 
+% ADD work on how invariants help recognise the motions of humans.
+
+\subsubsection{Optimisation algorithms using Invariant Descriptors}
+Reconstructing new trajectories from the invariants of the demonstrated motions is achieved through the solution of an constraint based optimal control problem. Here we solve to find optimal choice of control inputs that will drives the states of the problem to the states corresponding to the states of the demonstrated motion along its trajectory. 
+The objective function, contains the deviation of the invariants of the generated trajectory from those of the demonstrated. 
+State dynamic equations, are the dynamic equations relating the differential invariants with the evolution of the poose of the object and the moving frames. (check eqautions) 
+The boundary conditions, specify the initial and final pose of the object. These can be expressed as hard constraints or soft constraints (with a slack variable in the objective function) depending on whether the initial or final positions are known with accuracy. This uncertainty is then expressed using an appropriate weighting factor. 
+Additional path constraints, can also be imposed depending on workspace limits of the robot, or for obstacle avoidance.
+
+CasADI is used to solve our optimal control problems. It provides functionalities for nonlinear optimization  and optimal control using symbolic expressions. the non lienar program is fed to a sequential quadratic programming method to iteratively solve the NLP. Each QP is solved using the interior point method. 
+
+The OCP is discretised using a direct multiple shooring method. 
+
+\subsubsection{Noise and singularities of invariant representations}
+% We should ask if we should include this in the final presentation
+\subsubsection{Fundamentals of rigid body motions}
+% We should ask how much background information we should give on trajectory descriptions using poses etc. 
 
 \section{Work Completed}
 
