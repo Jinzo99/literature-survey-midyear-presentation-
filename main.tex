@@ -13,11 +13,20 @@
 \section{Background and Objective Formulation}
 Goal of thesis: To program an advanced collaborative handover task between a robot and a human. 
 What is advanced, collaborative, and what is a handover specifically. 
+What makes this thesis topic novel? Look at other hand over applications between humans and robots and compare methods! Important for presentation.
 
 \section{Methodology}
 % how do we plan to do everything
 \section{Literature}
+
 \subsection{Alternate methods used in literature}
+\subsubsection{Methods of Human Motion Estimation/Prediction}
+Some literature points to representing the trajectories of objects in space such as the motion of the hand of a human as the trajectory of a point on the rigid body. 
+This research often lacks the rotational information of the trajectory and is therefore not a full description of the rigid body motion.
+Descriptions are also often dependant on circumstantial information of the movement. These trajectories cannot cope with changes in the starting or ending position of the point. Changes in the reference frame of the trajectory. Changes in the reference point of the body. Changes in execution time and velocity profile or changes in amplitude. 
+
+
+
 \subsubsection{Alternate trajectory descriptors}
 % Other types of trajectory descriptors and their pitfalls and advantages 
 
@@ -107,13 +116,42 @@ Additional path constraints, can also be imposed depending on workspace limits o
 
 CasADI is used to solve our optimal control problems. It provides functionalities for nonlinear optimization  and optimal control using symbolic expressions. the non lienar program is fed to a sequential quadratic programming method to iteratively solve the NLP. Each QP is solved using the interior point method. 
 
-The OCP is discretised using a direct multiple shooring method. 
+The OCP is discretised using a direct multiple shoot ing method. 
 
 \subsubsection{Noise and singularities of invariant representations}
 % We should ask if we should include this in the final presentation
 \subsubsection{Fundamentals of rigid body motions}
 % We should ask how much background information we should give on trajectory descriptions using poses etc. 
 
+\subsection{Human Motion Prediction}
+There are two methods commonly used to predict human motion and model human behaviours. The first gesture recognition method is based on measuring joint angles of human participants (insert citations). 
+This method is difficult if the participant is not fully visible, sections of the body are obstructed from sight or the participant is not integrated with sensors. 
+A second method involves simply recognising the motion of a point on the rigid body of the human and creating a model thereof. (drawbacks ? )
+
+The method in this paper highlighted that human motions/gestures can be estimated by measuring the joint angles of the limbs of the human. 
+This is common practice in the gesture recognition of humans wearing mechanically actuated exoskeletons.
+A model can be created from a demonstration on nominal human trajectories during a handover task. 
+Using the created model a estimation and prediction can be made on the trajectories of the humans motion. 
+The more accurate and complex the model the more it will be able to cope with variances or deviations from the model. 
+This means that the model should include the ability to account for variations for example in velocity or timing of the handover. 
+The model should be generative, therefore be able to predict the future states of the humans hand during the handover task. 
+The model should include an estimate on the uncertainties on its prediction. These uncertainties could be useful to measure the certainty on a estimate of position which could feed into the optimisation algorithms as weightings.
+The model should finally also measure the consistency of the current human trajectories with that which it was taught. 
+Uncertainty and consistency information normally only comes from the data of multiple demonstrations where the trajectories could be attached to statistical data. 
+
+Invariants can further be used to recognise 6DOF rigid body motion trajectories of for instance say a humans hand during a handover task. 
+Using invariants to recognise these motions yields the same benefits as mentioned for the generation of trajectories. 
+Invariants have been shown to increase motion recognition rates (insert citations), because they are independant on many factors that would normally affect classificaitons. 
+Because invariants strip away all the dependancies to reference frames, reference points, paramerization, time scales, and linear/angular scales the recognition agorithms perform efficiently because of the reduction in the search space. 
+Two classification algorithms that can be used to recognise trajectories using invariants are based on Dynamic Time Warping algorithms and Hidden Markov Models. 
+% Do some research into Dynamic Time Warping Algothims  and Hidden Markov Models 
+Both of these models allow you to build the model from a set of demonstrations with different variations and then averaged. 
+This makes for robust classification algorithms with recognition success rates of up to, and over 90\%. 
+Successful classification of human motions is essential for a successful human robot interaction as successful and robust classifications leads to accurate predictions of human behaviours in future time instances. 
+
+Dynamic Time Warping algorithms measure similarities between motions that vary non-linearly in time time. When combined with invariant trajectory descriptors, the algorithms compare similarities between motions that vary in the dimensionless degree of advancement of the dimensionless geometric invariants of the motions. 
+Hidden Markov Models is a statistical method often used in language processing, be it writing or speech recognition (amongst other things). (understand these models) 
+The HMM have shown to perform slightly better than the Dynamic Time Warping algothims in classifying motions(insert citations). They are also slightly less computationally demanding and hence would be well utilised in online motion recognition.
 \section{Work Completed}
 
 \section{Future Work and Planning}
